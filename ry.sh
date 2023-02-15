@@ -7,6 +7,8 @@ JVM_OPTS="-Dname=$AppName  -Duser.timezone=Asia/Shanghai -Xms512m -Xmx1024m -XX:
 APP_HOME=`pwd`
 LOG_PATH=$APP_HOME/logs/stdout.log
 
+source /etc/profile
+
 if [ "$1" = "" ];
 then
     echo -e "\033[0;31m 未输入操作名 \033[0m  \033[0;34m {start|stop|restart|status} \033[0m"
