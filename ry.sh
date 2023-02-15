@@ -5,7 +5,7 @@ AppName=ruoyi-admin.jar
 # JVM参数
 JVM_OPTS="-Dname=$AppName  -Duser.timezone=Asia/Shanghai -Xms512m -Xmx1024m -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=512m -XX:+HeapDumpOnOutOfMemoryError -XX:+PrintGCDateStamps  -XX:+PrintGCDetails -XX:NewRatio=1 -XX:SurvivorRatio=30 -XX:+UseParallelGC -XX:+UseParallelOldGC"
 APP_HOME=`pwd`
-LOG_PATH=$APP_HOME/logs/$AppName.log
+LOG_PATH=$APP_HOME/logs/stdout.log
 
 if [ "$1" = "" ];
 then
@@ -19,14 +19,21 @@ then
     exit 1
 fi
 
+if [ ! -d "$APP_HOME/logs" ]; then
+  mkdir -p $APP_HOME/logs
+fi
+
+
 function start()
 {
     PID=`ps -ef |grep java|grep $AppName|grep -v grep|awk '{print $2}'`
 
 	if [ x"$PID" != x"" ]; then
-	    echo "$AppName is running..."
+	    kill -9 $PID && echo "$AppName is killed"
+        nohup java $JVM_OPTS -jar $AppName > $LOG_PATH 2>&1 &
+		echo "Start $AppName success..."
 	else
-		nohup java $JVM_OPTS -jar $AppName > /dev/null 2>&1 &
+		nohup java $JVM_OPTS -jar $AppName > $LOG_PATH 2>&1 &
 		echo "Start $AppName success..."
 	fi
 }
