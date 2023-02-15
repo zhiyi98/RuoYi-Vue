@@ -61,7 +61,7 @@ public class SysLoginService
      */
     public String login(String username, String password, String code, String uuid)
     {
-        boolean captchaEnabled = configService.selectCaptchaEnabled();
+        boolean captchaEnabled = /*configService.selectCaptchaEnabled()*/false;
         // 验证码开关
         if (captchaEnabled)
         {
