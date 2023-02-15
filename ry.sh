@@ -7,7 +7,9 @@ JVM_OPTS="-Dname=$AppName  -Duser.timezone=Asia/Shanghai -Xms512m -Xmx1024m -XX:
 APP_HOME=`pwd`
 LOG_PATH=$APP_HOME/logs/stdout.log
 
+cd /
 source /etc/profile
+cd $APP_HOME
 
 if [ "$1" = "" ];
 then
