@@ -1,5 +1,5 @@
-FROM openjdk:8-slim
-WORKDIR /usr/bin/docker
+FROM adoptopenjdk:8-jdk-hotspot
+WORKDIR /usr/local
 COPY ruoyi-admin.jar .
 CMD java -jar ruoyi-admin.jar
 #END
