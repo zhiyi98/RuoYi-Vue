@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.EboardCardMapper">
+    
+    <resultMap type="com.ruoyi.system.domain.EboardCard" id="EboardCardResult">
+        <result property="cardId"    column="card_id"    />
+        <result property="cardName"    column="card_name"    />
+    </resultMap>
+
+    <sql id="selectEboardCardVo">
+        select card_id, card_name from eboard_card
+    </sql>
+
+    <select id="selectEboardCardList" parameterType="EboardCard" resultMap="EboardCardResult">
+        <include refid="selectEboardCardVo"/>
+        <where>  
+            <if test="cardName != null  and cardName != ''"> and card_name like concat('%', #{cardName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectEboardCardByCardId" parameterType="Long" resultMap="EboardCardResult">
+        <include refid="selectEboardCardVo"/>
+        where card_id = #{cardId}
+    </select>
+        
+    <insert id="insertEboardCard" parameterType="EboardCard">
+        insert into eboard_card
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cardId != null">card_id,</if>
+            <if test="cardName != null">card_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="cardId != null">#{cardId},</if>
+            <if test="cardName != null">#{cardName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateEboardCard" parameterType="EboardCard">
+        update eboard_card
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="cardName != null">card_name = #{cardName},</if>
+        </trim>
+        where card_id = #{cardId}
+    </update>
+
+    <delete id="deleteEboardCardByCardId" parameterType="Long">
+        delete from eboard_card where card_id = #{cardId}
+    </delete>
+
+    <delete id="deleteEboardCardByCardIds" parameterType="String">
+        delete from eboard_card where card_id in 
+        <foreach item="cardId" collection="array" open="(" separator="," close=")">
+            #{cardId}
+        </foreach>
+    </delete>
+
+    <resultMap id="EboardCardDetailResultMap" type="com.ruoyi.system.domain.EboardCardDetail">
+        <result property="cardId" column="card_id"/>
+        <result property="cardName" column="card_name"/>
+        <collection property="eboardWordList" column="card_id" javaType="ArrayList"
+                    ofType="com.ruoyi.system.domain.EboardWord"
+                    select="com.ruoyi.system.mapper.EboardWordMapper.selectEboardWordByCardId" />
+        <collection property="eboardStoryList" column="card_id" javaType="ArrayList"
+                    ofType="com.ruoyi.system.domain.EboardStory"
+                    select="com.ruoyi.system.mapper.EboardStoryMapper.selectEboardStoryByCardId" />
+    </resultMap>
+    <select id="queryEboardCardDetailList" resultMap="EboardCardDetailResultMap">
+        select * from eboard_card
+    </select>
+
+</mapper>

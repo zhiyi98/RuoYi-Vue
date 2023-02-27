@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.EboardWordMapper">
+    
+    <resultMap type="com.ruoyi.system.domain.EboardWord" id="EboardWordResult">
+        <result property="wordId"    column="word_id"    />
+        <result property="wordName"    column="word_name"    />
+    </resultMap>
+
+    <sql id="selectEboardWordVo">
+        select word_id, word_name from eboard_word
+    </sql>
+
+    <select id="selectEboardWordList" parameterType="EboardWord" resultMap="EboardWordResult">
+        <include refid="selectEboardWordVo"/>
+        <where>  
+            <if test="wordName != null  and wordName != ''"> and word_name like concat('%', #{wordName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectEboardWordByWordId" parameterType="Long" resultMap="EboardWordResult">
+        <include refid="selectEboardWordVo"/>
+        where word_id = #{wordId}
+    </select>
+        
+    <insert id="insertEboardWord" parameterType="EboardWord" useGeneratedKeys="true" keyProperty="wordId">
+        insert into eboard_word
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="wordName != null">word_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="wordName != null">#{wordName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateEboardWord" parameterType="EboardWord">
+        update eboard_word
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="wordName != null">word_name = #{wordName},</if>
+        </trim>
+        where word_id = #{wordId}
+    </update>
+
+    <delete id="deleteEboardWordByWordId" parameterType="Long">
+        delete from eboard_word where word_id = #{wordId}
+    </delete>
+
+    <delete id="deleteEboardWordByWordIds" parameterType="String">
+        delete from eboard_word where word_id in 
+        <foreach item="wordId" collection="array" open="(" separator="," close=")">
+            #{wordId}
+        </foreach>
+    </delete>
+
+    <select id="selectEboardWordByCardId" resultMap="EboardWordResult">
+        select
+            eboard_word.*
+        from
+            eboard_card_word_relation
+            inner join eboard_word on eboard_card_word_relation.word_id = eboard_word.word_id
+        where
+            eboard_card_word_relation.card_id = #{cardId}
+    </select>
+
+
+</mapper>

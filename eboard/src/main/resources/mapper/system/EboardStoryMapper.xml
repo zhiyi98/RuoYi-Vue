@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.EboardStoryMapper">
+    
+    <resultMap type="com.ruoyi.system.domain.EboardStory" id="EboardStoryResult">
+        <result property="storyId"    column="story_id"    />
+        <result property="storyName"    column="story_name"    />
+        <result property="storyContent"    column="story_content"    />
+    </resultMap>
+
+    <sql id="selectEboardStoryVo">
+        select story_id, story_name, story_content from eboard_story
+    </sql>
+
+    <select id="selectEboardStoryList" parameterType="EboardStory" resultMap="EboardStoryResult">
+        <include refid="selectEboardStoryVo"/>
+        <where>  
+            <if test="storyName != null  and storyName != ''"> and story_name like concat('%', #{storyName}, '%')</if>
+            <if test="storyContent != null  and storyContent != ''"> and story_content = #{storyContent}</if>
+        </where>
+    </select>
+    
+    <select id="selectEboardStoryByStoryId" parameterType="Long" resultMap="EboardStoryResult">
+        <include refid="selectEboardStoryVo"/>
+        where story_id = #{storyId}
+    </select>
+
+    <select id="selectEboardStoryByCardId" resultMap="EboardStoryResult">
+        select
+            eboard_story.*
+        from
+            eboard_card_story_relation
+            inner join eboard_story on eboard_card_story_relation.story_id = eboard_story.story_id
+        where
+            eboard_card_story_relation.card_id = #{cardId}
+    </select>
+        
+    <insert id="insertEboardStory" parameterType="EboardStory">
+        insert into eboard_story
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="storyId != null">story_id,</if>
+            <if test="storyName != null">story_name,</if>
+            <if test="storyContent != null">story_content,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="storyId != null">#{storyId},</if>
+            <if test="storyName != null">#{storyName},</if>
+            <if test="storyContent != null">#{storyContent},</if>
+         </trim>
+    </insert>
+
+    <update id="updateEboardStory" parameterType="EboardStory">
+        update eboard_story
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="storyName != null">story_name = #{storyName},</if>
+            <if test="storyContent != null">story_content = #{storyContent},</if>
+        </trim>
+        where story_id = #{storyId}
+    </update>
+
+    <delete id="deleteEboardStoryByStoryId" parameterType="Long">
+        delete from eboard_story where story_id = #{storyId}
+    </delete>
+
+    <delete id="deleteEboardStoryByStoryIds" parameterType="String">
+        delete from eboard_story where story_id in 
+        <foreach item="storyId" collection="array" open="(" separator="," close=")">
+            #{storyId}
+        </foreach>
+    </delete>
+</mapper>

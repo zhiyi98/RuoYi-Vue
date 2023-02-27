@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.EboardWordTagMapper">
+    
+    <resultMap type="EboardWordTag" id="EboardWordTagResult">
+        <result property="wordTagId"    column="word_tag_id"    />
+        <result property="wordTagName"    column="word_tag_name"    />
+    </resultMap>
+
+    <sql id="selectEboardWordTagVo">
+        select word_tag_id, word_tag_name from eboard_word_tag
+    </sql>
+
+    <select id="selectEboardWordTagList" parameterType="EboardWordTag" resultMap="EboardWordTagResult">
+        <include refid="selectEboardWordTagVo"/>
+        <where>  
+            <if test="wordTagName != null  and wordTagName != ''"> and word_tag_name like concat('%', #{wordTagName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectEboardWordTagByWordTagId" parameterType="Long" resultMap="EboardWordTagResult">
+        <include refid="selectEboardWordTagVo"/>
+        where word_tag_id = #{wordTagId}
+    </select>
+        
+    <insert id="insertEboardWordTag" parameterType="EboardWordTag">
+        insert into eboard_word_tag
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="wordTagId != null">word_tag_id,</if>
+            <if test="wordTagName != null">word_tag_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="wordTagId != null">#{wordTagId},</if>
+            <if test="wordTagName != null">#{wordTagName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateEboardWordTag" parameterType="EboardWordTag">
+        update eboard_word_tag
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="wordTagName != null">word_tag_name = #{wordTagName},</if>
+        </trim>
+        where word_tag_id = #{wordTagId}
+    </update>
+
+    <delete id="deleteEboardWordTagByWordTagId" parameterType="Long">
+        delete from eboard_word_tag where word_tag_id = #{wordTagId}
+    </delete>
+
+    <delete id="deleteEboardWordTagByWordTagIds" parameterType="String">
+        delete from eboard_word_tag where word_tag_id in 
+        <foreach item="wordTagId" collection="array" open="(" separator="," close=")">
+            #{wordTagId}
+        </foreach>
+    </delete>
+</mapper>

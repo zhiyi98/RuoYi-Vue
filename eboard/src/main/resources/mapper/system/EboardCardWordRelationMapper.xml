@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.EboardCardWordRelationMapper">
+    
+    <resultMap type="EboardCardWordRelation" id="EboardCardWordRelationResult">
+        <result property="id"    column="id"    />
+        <result property="cardId"    column="card_id"    />
+        <result property="wordId"    column="word_id"    />
+    </resultMap>
+
+    <sql id="selectEboardCardWordRelationVo">
+        select id, card_id, word_id from eboard_card_word_relation
+    </sql>
+
+    <select id="selectEboardCardWordRelationList" parameterType="EboardCardWordRelation" resultMap="EboardCardWordRelationResult">
+        <include refid="selectEboardCardWordRelationVo"/>
+        <where>  
+            <if test="cardId != null "> and card_id = #{cardId}</if>
+            <if test="wordId != null "> and word_id = #{wordId}</if>
+        </where>
+    </select>
+    
+    <select id="selectEboardCardWordRelationById" parameterType="Long" resultMap="EboardCardWordRelationResult">
+        <include refid="selectEboardCardWordRelationVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertEboardCardWordRelation" parameterType="EboardCardWordRelation" useGeneratedKeys="true" keyProperty="id">
+        insert into eboard_card_word_relation
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cardId != null">card_id,</if>
+            <if test="wordId != null">word_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="cardId != null">#{cardId},</if>
+            <if test="wordId != null">#{wordId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateEboardCardWordRelation" parameterType="EboardCardWordRelation">
+        update eboard_card_word_relation
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="cardId != null">card_id = #{cardId},</if>
+            <if test="wordId != null">word_id = #{wordId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteEboardCardWordRelationById" parameterType="Long">
+        delete from eboard_card_word_relation where id = #{id}
+    </delete>
+
+    <delete id="deleteEboardCardWordRelationByIds" parameterType="String">
+        delete from eboard_card_word_relation where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

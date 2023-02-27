@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.EboardWordTagRelationMapper">
+    
+    <resultMap type="EboardWordTagRelation" id="EboardWordTagRelationResult">
+        <result property="id"    column="id"    />
+        <result property="wordId"    column="word_id"    />
+        <result property="wordTagId"    column="word_tag_id"    />
+    </resultMap>
+
+    <sql id="selectEboardWordTagRelationVo">
+        select id, word_id, word_tag_id from eboard_word_tag_relation
+    </sql>
+
+    <select id="selectEboardWordTagRelationList" parameterType="EboardWordTagRelation" resultMap="EboardWordTagRelationResult">
+        <include refid="selectEboardWordTagRelationVo"/>
+        <where>  
+            <if test="wordId != null "> and word_id = #{wordId}</if>
+            <if test="wordTagId != null "> and word_tag_id = #{wordTagId}</if>
+        </where>
+    </select>
+    
+    <select id="selectEboardWordTagRelationById" parameterType="Long" resultMap="EboardWordTagRelationResult">
+        <include refid="selectEboardWordTagRelationVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertEboardWordTagRelation" parameterType="EboardWordTagRelation">
+        insert into eboard_word_tag_relation
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="wordId != null">word_id,</if>
+            <if test="wordTagId != null">word_tag_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="wordId != null">#{wordId},</if>
+            <if test="wordTagId != null">#{wordTagId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateEboardWordTagRelation" parameterType="EboardWordTagRelation">
+        update eboard_word_tag_relation
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="wordId != null">word_id = #{wordId},</if>
+            <if test="wordTagId != null">word_tag_id = #{wordTagId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteEboardWordTagRelationById" parameterType="Long">
+        delete from eboard_word_tag_relation where id = #{id}
+    </delete>
+
+    <delete id="deleteEboardWordTagRelationByIds" parameterType="String">
+        delete from eboard_word_tag_relation where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
